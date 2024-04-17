@@ -1,16 +1,16 @@
 1) SELECT FirstName, LastName FROM customers where City = "Prague";
-2) 
-3) 
-4) 
-5) 
-6) 
-7) 
-8) 
-9) 
-10) 
-11) 
-12)
-13) 
-14) 
-15) 
-16) 
+2) SELECT FirstName, LastName FROM customers where FirstName like "M%" and FirstName like "%ch%";
+3) SELECT Name, Bytes/1024/1024 as Megabytes FROM tracks;
+4) SELECT LastName, FirstName FROM employees where HireDate >= date('2002-01-01') and HireDate <= date('2002-12-31') and City = "Calgary";
+5) SELECT LastName, FirstName FROM employees where (HireDate-BirthDate)>=40;
+6) SELECT * FROM customers where Country = 'USA' and FAX is NULL;
+7) SELECT ShipCity FROM sales where ShipCountry = 'Canada' and (SalesDate like '%-08-%' or SalesDate like '%-09-%');
+8) SELECT Email FROM customers where Email like '%gmail%';
+9) SELECT * FROM employees where HireDate <= '2006-04-11';
+10) SELECT Title FROM employees ORDER BY Title ASC;
+11) SELECT FirstName, LastName, (2024-Age) as BirthYear FROM customers ORDER BY LastName ASC;
+12) SELECT MIN(Milliseconds / 1000) as Seconds FROM tracks;
+13) SELECT Name, MIN(Milliseconds / 1000) as Seconds FROM tracks;
+14) SELECT Country, AVG(Age) as Average_Age FROM customers GROUP BY Country;
+15) SELECT LastName FROM employees where HireDate like '%-10-%';
+16) SELECT LastName, MIN(HireDate) as Minimal_HireDate FROM employees;
