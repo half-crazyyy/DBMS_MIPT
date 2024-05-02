@@ -1,0 +1,64 @@
+
+*****************************************************************
+
+1) ПОДЗАПРОСЫ:
+SELECT SUM(UnitPrice) FROM sales_items where SalesId in (SELECT SalesId FROM sales where (SalesDate >= date('2012-01-01') and  SalesDate < date('2012-04-01') and ShipCountry = 'USA'));
+   
+   JOIN:
+SELECT SUM(UnitPrice) FROM sales inner join sales_items on sales.SalesId = sales_items.SalesId where (SalesDate >= date('2012-01-01') and  SalesDate < date('2012-04-01') and ShipCountry = 'USA')
+
+*****************************************************************
+
+2) ПОДЗАПРОСЫ:
+SELECT FirstName FROM customers where FirstName not in (SELECT FirstName FROM employees) GROUP BY FirstName;
+   
+   JOIN:
+SELECT FirstName FROM customers left join employees on customers.FirstName = employees.FirstName where employees.FirstName is null GROUP BY customers.FirstName;
+
+   ЛОГИЧЕСКОЕ ВЫЧИТАНИЕ:
+SELECT FirstName FROM customers except SELECT FirstName FROM employees;
+
+*****************************************************************
+
+3) НЕТ, данные запросы вернут разный результат. Разница между этими двумя запросами заключается в месте применения условия t1.column1=0.
+
+В первом запросе условие WHERE t1.column1=0 применится после LEFT JOIN, то есть из результата соединения будут выбраны только те строки, где t1.column1 равен 0. Это уменьшит количество строк в результате, так как строки, где t1.column1 не равен 0, будут исключены из конечного результата.
+
+Во втором запросе условие t1.column1=0 применяется именно в ON у LEFT JOIN, то есть соединение будет выполнено только для тех строк из t1, где column1 равен 0. В этом случае все строки из t1, где column1 равен 0, будут включены в результат, даже если соответствующих строк в t2 не найдено.
+
+Вывод: второй запрос вернет больше строк.
+
+*****************************************************************
+
+4) ПОДЗАПРОСЫ:
+SELECT (SELECT Title FROM albums where tracks.AlbumId  = albums.AlbumId) as Title, COUNT(TrackId) as Count_of_Tracks from tracks GROUP BY tracks.AlbumId;
+   
+   JOIN:
+SELECT Title, COUNT(TrackId) as Count_of_Tracks FROM tracks left join albums on tracks.AlbumId  = albums.AlbumId GROUP BY tracks.AlbumId;
+
+*****************************************************************
+
+5) SELECT LastName, FirstName FROM customers inner join sales on customers.CustomerId = sales.CustomerId  where sales.SalesDate like '%2009-%' and customers.Country = 'Germany' and sales.ShipCity = 'Berlin' GROUP BY LastName, FirstName  ;
+
+*****************************************************************
+
+6) ПОДЗАПРОСЫ:
+SELECT (
+    SELECT 
+        (SELECT LastName FROM customers where customers.CustomerId = sales.CustomerId)
+    FROM sales where sales.SalesId = sales_items.SalesId) 
+as LastName FROM sales_items GROUP BY LastName HAVING SUM(Quantity) > 30;
+   
+   JOIN:
+SELECT LastName from customers inner join sales inner join sales_items on customers.CustomerId = sales.CustomerId and sales.SalesId = sales_items.SalesId  GROUP BY LastName HAVING SUM(sales_items.Quantity) > 30;
+
+*****************************************************************
+
+7) SELECT genres.Name, AVG(UnitPrice) as Average_Genre_Price  FROM genres inner join tracks on genres.GenreId = tracks.GenreId GROUP BY genres.Name;
+
+*****************************************************************
+
+8) SELECT Name FROM (SELECT genres.Name, AVG(UnitPrice) as Average_Genre_Price  FROM genres inner join tracks on genres.GenreId = tracks.GenreId GROUP BY genres.Name ) where Average_Genre_Price > 1;
+
+*****************************************************************
+
