@@ -31,14 +31,14 @@ SELECT FirstName FROM customers except SELECT FirstName FROM employees;
 *****************************************************************
 
 4) ПОДЗАПРОСЫ:
-SELECT (SELECT Title FROM albums where tracks.AlbumId  = albums.AlbumId) as Title, COUNT(TrackId) as Count_of_Tracks from tracks GROUP BY tracks.AlbumId;
+SELECT (SELECT Title FROM albums where tracks.AlbumId  = albums.AlbumId) as Title, COUNT(TrackId) as Count_of_Tracks from tracks GROUP BY Title;
    
    JOIN:
-SELECT Title, COUNT(TrackId) as Count_of_Tracks FROM tracks left join albums on tracks.AlbumId  = albums.AlbumId GROUP BY tracks.AlbumId;
+SELECT Title, COUNT(TrackId) as Count_of_Tracks FROM tracks inner join albums on tracks.AlbumId  = albums.AlbumId GROUP BY albums.Title;
 
 *****************************************************************
 
-5) SELECT LastName, FirstName FROM customers inner join sales on customers.CustomerId = sales.CustomerId  where sales.SalesDate like '%2009-%' and customers.Country = 'Germany' and sales.ShipCity = 'Berlin' GROUP BY LastName, FirstName  ;
+5) SELECT LastName, FirstName FROM customers inner join sales on customers.CustomerId = sales.CustomerId  where sales.SalesDate like '%2009-%' and customers.Country = 'Germany' and sales.ShipCity = 'Berlin' ;
 
 *****************************************************************
 
@@ -54,7 +54,7 @@ SELECT LastName from customers inner join sales inner join sales_items on custom
 
 *****************************************************************
 
-7) SELECT genres.Name, AVG(UnitPrice) as Average_Genre_Price  FROM genres inner join tracks on genres.GenreId = tracks.GenreId GROUP BY genres.Name;
+7) SELECT genres.Name, AVG(UnitPrice) as Average_Genre_Price FROM genres inner join tracks on genres.GenreId = tracks.GenreId GROUP BY genres.Name;
 
 *****************************************************************
 
