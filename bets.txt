@@ -1,0 +1,39 @@
+
+*************************************************************************
+
+7) Запросы для чистки грязных данных (выполнять можно в любой 
+последовательности): 
+UPDATE log SET user_id  = substring(user_id, 25, 9) where user_id LIKE 
+'%апись пользователя № - user_%';
+//Для изменения данных user_id в log, чтобы оставить только
+значения вида user_N, где N - значение идентификатора.
+
+DELETE from log where user_id like '#error%';
+//Для чистки данных со значением #error
+
+UPDATE users SET user_id  = 'u' ||substring(user_id, 2, 8) where user_id LIKE 'User%';
+//Для изменения регистра первой буквы в user_id в users
+
+*************************************************************************
+
+8) ЗАДАЧИ
+
+	a) SELECT MIN(count_attempts) from (SELECT user_id, COUNT(time) as count_attempts from (SELECT * from (log inner join (SELECT user_id, MIN(time) as min_time from log where bet != '' GROUP BY user_id) as A on log.user_id=A.user_id)) where time <= min_time GROUP BY user_id);
+
+	b) SELECT AVG(percent_win) FROM (SELECT geo, (100*(win/bet)) as percent_win FROM log inner join users on log.user_id = users.user_id and bet != '') where percent_win > 0;
+
+
+	c) SELECT user_id, (SUM(win) - SUM(bet)) as balance from log GROUP BY user_id
+
+	d) SELECT geo FROM(SELECT geo, MAX(100*(win/bet)) as percent_win FROM log inner join users on log.user_id = users.user_id and bet != '');
+
+
+	e) SELECT geo FROM (SELECT MAX(bet), geo FROM log inner join users on log.user_id = users.user_id and bet != '');
+
+	f) Перед выполнением запроса необходимо обработать данные столбца time, для этого необходимо будет выполнить следующие запросы: 
+UPDATE log SET time  = substring(time, 2) where time LIKE '[%';
+UPDATE log SET time = substring(time, 1, 11)||'0'||substring(time,12) where LENGTH(time) = 18;
+
+Для решения задачи необходимо выполнить запрос: 
+SELECT AVG(Difference) from (SELECT user_id, (strftime('%s', min_time) - strftime('%s', MIN(time))) as Difference from (SELECT * from (log inner join (SELECT user_id, MIN(time) as min_time from log where bet != '' GROUP BY user_id) as A on log.user_id=A.user_id)) GROUP BY user_id)
+
